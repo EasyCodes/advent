@@ -20,34 +20,43 @@ def get_opmodes(s):
     return ret
 
 def get_value(mode, arr, i):
-    print("Mode: " + str(mode) + " value " + str(arr[i]))
     if mode == 1:
         return int(arr[i])
     if mode == 0:
+        #print("INDEX: " + str(i) + " POINTS TO: " + str(arr[i]) + " WHICH IS REALLY: " + str(arr[arr[i]]))
         return int(arr[arr[i]])
 
 def process_opcode(arr, i):
     if i > len(arr) or i < 0 or arr[i] == 99:
         return -1
 
-    print("index: " + str(i) + " inst: " + str(arr[i]))
     op_code = get_opcode(arr[i])
-    print("opcode " + str(op_code))
     op_mode = get_opmodes(arr[i])
-    if len(op_mode) < 2:
-        op_mode = op_mode * 2
-    print("opmodes " + str(op_mode))
+    while len(op_mode) < 2:
+        op_mode.insert(0, 0)
+
+    print("index " + str(i) + " inst: " + str(arr[i]) + " = " + str(op_code) + " " + str(op_mode))
+    #if i == :
+    #    print(str(arr))
+    #    print(str(arr[i]))
+    #    print(str(arr[i+1]))
+    #    print(str(arr[i+2]))
+    #    print(str(arr[i+3]))
+    if op_code == 1 or op_code == 2:
+        C = get_value(op_mode[1], arr, i + 1)
+        B = get_value(op_mode[0], arr, i + 2)
+        #print("C: " + str(C) + " B: " + str(B))
     if op_code == 1:
-        arr[arr[i + 3]] = get_value(op_mode[0], arr, i + 1) + get_value(op_mode[1], arr, i + 2)
+        arr[arr[i + 3]] = C + B
         return 4
     elif op_code == 2:
-        arr[arr[i + 3]] = get_value(op_mode[0], arr, i + 1) * get_value(op_mode[1], arr, i + 2)
+        arr[arr[i + 3]] = C * B
         return 4
     elif op_code == 3:
         arr[arr[i + 1]] = input("enter code")
         return 2
     elif op_code == 4:
-        print(arr[i + 1])
+        print(get_value(op_mode[0], arr, i + 1))
         return 2
     else:
         return -1
